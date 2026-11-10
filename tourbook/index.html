@@ -6,17 +6,19 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>P!NK NA 2026 – Digital Tour Book</title>
 <style>
-  body { margin:0; font-family:Georgia, 'Times New Roman', serif; background:#fff; color:#111; }
+  body { margin:0; background:#111; color:#fff; font-family:system-ui; }
   #cover { position:fixed; inset:0; background:#000 url('cover-page1.png') center/cover no-repeat; display:flex; align-items:flex-end; justify-content:center; padding-bottom:40px; z-index:100; }
-  #cover button { padding:14px 28px; background:#fff; color:#e10600; border:none; border-radius:6px; font-weight:600; font-family:system-ui; }
-  header { background:#111; color:#fff; padding:12px 16px; position:sticky; top:0; z-index:20; font-family:system-ui; }
-  .nav { display:flex; background:#eee; border-bottom:1px solid #ccc; }
-  .nav button { flex:1; padding:10px; background:none; border:none; }
-  .nav button.active { background:#fff; border-bottom:2px solid #e10600; }
-  .content { padding:16px; }
+  #cover button { padding:14px 28px; background:#fff; color:#e10600; border:none; border-radius:6px; font-weight:600; }
+  header { background:#000; padding:10px 16px; position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; }
+  .nav button { background:#333; color:#fff; border:none; padding:8px 12px; margin:0 4px; border-radius:6px; }
+  .nav button.active { background:#e10600; }
+  #pageview { height:calc(100vh - 50px); overflow:auto; background:#222; }
+  #pageview img { width:100%; display:block; }
+  .controls { background:#000; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
+  .content { padding:16px; background:#fff; color:#111; min-height:calc(100vh - 50px); }
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center; font-size:13px; }
   .cal-grid div { padding:8px 2px; border:1px solid #ddd; min-height:48px; cursor:pointer; }
-  .cal-grid .dow { background:#333; color:#fff; font-weight:600; border:none; cursor:default; }
+  .cal-grid .dow { background:#333; color:#fff; font-weight:600; border:none; }
   .cal-grid .filled { background:#ffe6e6; font-weight:600; }
   .daysheet h2 { text-align:center; margin:8px 0; }
   .daysheet .section { margin:14px 0; }
@@ -31,32 +33,42 @@
   <button onclick="enter()">Open Tour Book</button>
 </div>
 <header>
-  <div>P!NK • Summer Carnival 2026</div>
-  <div class="version">v1.3</div>
+  <div>P!NK • 2026 <span class="version">v1.4</span></div>
+  <div class="nav">
+    <button class="active" onclick="showView('pages')">Pages</button>
+    <button onclick="showView('calendar')">Calendar</button>
+  </div>
 </header>
-<div class="nav">
-  <button class="active" onclick="show('calendar')">Calendar</button>
-  <button onclick="show('contacts')">Contacts</button>
+<div id="pages">
+  <div id="pageview"><img id="pageimg" src="pages/p-002.png"></div>
+  <div class="controls">
+    <button onclick="prevPage()">Prev</button>
+    <span id="pagenum">Page 2</span>
+    <button onclick="nextPage()">Next</button>
+  </div>
 </div>
-<div id="calendar" class="content">
+<div id="calendar" class="content hidden">
   <div style="text-align:center;font-weight:700;margin-bottom:8px">OCTOBER 2026</div>
   <div class="cal-grid" id="octCal"></div>
   <div style="text-align:center;font-weight:700;margin:16px 0 8px">NOVEMBER 2026</div>
   <div class="cal-grid" id="novCal"></div>
 </div>
-<div id="contacts" class="content hidden">
-  <h3>A Party</h3>
-  <div>Nik Tischler • A Party TM</div>
-  <h3>Local</h3>
-  <div>Ryan Vangel • Promoter • <a href="tel:+16176493226">617-649-3226</a></div>
-  <div>Mike Marchetti • Prod Rep • <a href="tel:+15083317599">508-331-7599</a></div>
-</div>
 <div id="daypage" class="content daysheet hidden">
   <h2 id="daytitle"></h2>
   <div id="daybody"></div>
+  <button onclick="showView('calendar')" style="margin-top:20px">Back to Calendar</button>
 </div>
 <script>
 function enter() { document.getElementById('cover').style.display='none'; }
+
+let currentPage = 2;
+const maxPage = 42;
+function showPage() {
+  document.getElementById('pageimg').src = 'pages/p-' + String(currentPage).padStart(3,'0') + '.png';
+  document.getElementById('pagenum').textContent = 'Page ' + currentPage;
+}
+function prevPage() { if (currentPage > 2) { currentPage--; showPage(); } }
+function nextPage() { if (currentPage < maxPage) { currentPage++; showPage(); } }
 
 const filled = {
   '2026-10-31': { status: 'Show 1 of 2 • Fenway Park', hotels: 'A: Four Seasons Boylston<br>B: The Ritz-Carlton<br>C: Commonwealth Hotel', venue: 'Fenway Park<br>4 Yawkey Way, Boston, MA', schedule: 'Doors 5:00 PM<br>P!NK 8:30–10:30 PM<br>Curfew 10:30 PM' },
@@ -102,14 +114,16 @@ function openDay(key) {
     <div class="section"><div class="label">NOTES</div>${data.notes || '<span class="empty">—</span>'}</div>
   `;
   document.getElementById('daybody').innerHTML = body;
-  show('daypage');
+  showView('daypage');
 }
 
-function show(id) {
-  document.querySelectorAll('.content').forEach(el => el.classList.add('hidden'));
+function showView(id) {
+  document.getElementById('pages').classList.add('hidden');
+  document.getElementById('calendar').classList.add('hidden');
+  document.getElementById('daypage').classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  if (id === 'calendar' || id === 'contacts') event.target.classList.add('active');
+  if (id === 'pages' || id === 'calendar') event.target.classList.add('active');
 }
 
 buildCal(2026, 9, 'octCal');
