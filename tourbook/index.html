@@ -21,6 +21,7 @@
   .daysheet h2 { text-align:center; margin:8px 0; }
   .daysheet .section { margin:14px 0; }
   .daysheet .label { font-weight:700; font-size:13px; letter-spacing:1px; margin-bottom:4px; }
+  .empty { color:#999; font-style:italic; }
   .hidden { display:none !important; }
   .version { font-size:11px; opacity:.6; }
 </style>
@@ -31,7 +32,7 @@
 </div>
 <header>
   <div>P!NK • Summer Carnival 2026</div>
-  <div class="version">v1.2</div>
+  <div class="version">v1.3</div>
 </header>
 <div class="nav">
   <button class="active" onclick="show('calendar')">Calendar</button>
@@ -58,18 +59,18 @@
 function enter() { document.getElementById('cover').style.display='none'; }
 
 const filled = {
-  '2026-10-31': 'Show 1 • Fenway',
-  '2026-11-01': 'Show 2 • Fenway',
-  '2026-11-02': 'Travel • New York',
-  '2026-11-04': 'Show • Citi Field',
-  '2026-11-06': 'Show • PNC Park',
-  '2026-11-08': 'Show • Nationals',
-  '2026-11-10': 'Today • Day Off',
-  '2026-11-11': 'Show • Nationals',
-  '2026-11-13': 'Show • Target Field',
-  '2026-11-16': 'Show • Wrigley',
-  '2026-11-18': 'Show • Milwaukee',
-  '2026-11-20': 'Show • Detroit'
+  '2026-10-31': { status: 'Show 1 of 2 • Fenway Park', hotels: 'A: Four Seasons Boylston<br>B: The Ritz-Carlton<br>C: Commonwealth Hotel', venue: 'Fenway Park<br>4 Yawkey Way, Boston, MA', schedule: 'Doors 5:00 PM<br>P!NK 8:30–10:30 PM<br>Curfew 10:30 PM' },
+  '2026-11-01': { status: 'Show 2 of 2 • Fenway Park', hotels: 'A & B same as Oct 31<br>C moves after show', venue: 'Fenway Park', schedule: 'Same structure • Curfew 10:30 PM' },
+  '2026-11-02': { status: 'Travel Day • New York', hotels: 'A: Four Seasons New York<br>B: The Plaza<br>C: Ace Hotel Brooklyn', venue: '—', schedule: 'No show' },
+  '2026-11-04': { status: 'Show • Citi Field', hotels: 'Same as Nov 2', venue: 'Citi Field, Queens', schedule: 'Doors 5:00 PM • Curfew 11:00 PM' },
+  '2026-11-06': { status: 'Show • PNC Park', hotels: 'A: Fairmont Pittsburgh<br>B: Kimpton Hotel Monaco<br>C: Hilton Garden Inn', venue: 'PNC Park', schedule: 'Doors 5:30 PM • Curfew 10:45 PM' },
+  '2026-11-08': { status: 'Show • Nationals Park', hotels: 'A: The Willard<br>B: Hotel Washington<br>C: Hampton Inn', venue: 'Nationals Park', schedule: 'Doors 5:00 PM • Curfew 10:30 PM' },
+  '2026-11-10': { status: 'Today • Day Off', hotels: 'Same as Nov 8', venue: '—', schedule: 'Day off. Load-in tomorrow.' },
+  '2026-11-11': { status: 'Show • Nationals Park', hotels: 'Same as Nov 8', venue: 'Nationals Park', schedule: 'Doors 5:00 PM • Curfew 10:30 PM' },
+  '2026-11-13': { status: 'Show • Target Field', hotels: 'A: Four Seasons Minneapolis<br>B: The Depot<br>C: Hilton Minneapolis', venue: 'Target Field', schedule: 'Doors 5:00 PM • Curfew 10:30 PM' },
+  '2026-11-16': { status: 'Show • Wrigley Field', hotels: 'A: The Langham<br>B: Hotel EMC2<br>C: Hampton Inn', venue: 'Wrigley Field', schedule: 'Doors 5:00 PM • Curfew 10:30 PM' },
+  '2026-11-18': { status: 'Show • American Family Field', hotels: 'A: The Pfister<br>B: Kimpton Journeyman<br>C: Hilton Milwaukee', venue: 'American Family Field', schedule: 'Doors 5:00 PM • Curfew 10:30 PM' },
+  '2026-11-20': { status: 'Show • Comerica Park', hotels: 'A: The Shinola Hotel<br>B: Detroit Foundation Hotel<br>C: Hampton Inn', venue: 'Comerica Park', schedule: 'Doors 5:00 PM • Curfew 10:30 PM' }
 };
 
 function buildCal(year, month, containerId) {
@@ -81,7 +82,7 @@ function buildCal(year, month, containerId) {
   for (let i = 0; i < start; i++) html += '<div></div>';
   for (let d = 1; d <= days; d++) {
     const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const label = filled[key] || '';
+    const label = filled[key] ? filled[key].status.split('•')[0].trim() : '';
     const cls = filled[key] ? 'filled' : '';
     html += `<div class="${cls}" onclick="openDay('${key}')">${d}${label ? '<br>'+label : ''}</div>`;
   }
@@ -92,14 +93,14 @@ function openDay(key) {
   const date = new Date(key + 'T12:00:00');
   const title = date.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }).toUpperCase();
   document.getElementById('daytitle').textContent = title;
-  let body = '';
-  if (filled[key]) {
-    body = `<div class="section"><div class="label">STATUS</div>${filled[key]}</div>
-            <div class="section"><div class="label">NOTES</div>Full day sheet data can be added here.</div>`;
-  } else {
-    body = `<div class="section"><div class="label">STATUS</div>No data yet</div>
-            <div class="section"><div class="label">NOTES</div>This day is a placeholder. Content can be added later.</div>`;
-  }
+  const data = filled[key] || {};
+  const body = `
+    <div class="section"><div class="label">STATUS</div>${data.status || '<span class="empty">—</span>'}</div>
+    <div class="section"><div class="label">HOTELS</div>${data.hotels || '<span class="empty">—</span>'}</div>
+    <div class="section"><div class="label">VENUE</div>${data.venue || '<span class="empty">—</span>'}</div>
+    <div class="section"><div class="label">SCHEDULE</div>${data.schedule || '<span class="empty">—</span>'}</div>
+    <div class="section"><div class="label">NOTES</div>${data.notes || '<span class="empty">—</span>'}</div>
+  `;
   document.getElementById('daybody').innerHTML = body;
   show('daypage');
 }
