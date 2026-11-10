@@ -17,7 +17,8 @@
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center; font-size:13px; }
   .cal-grid div { padding:8px 2px; border:1px solid #ddd; min-height:48px; }
   .cal-grid .dow { background:#333; color:#fff; font-weight:600; border:none; }
-  .cal-grid .show { background:#ffe6e6; font-weight:600; cursor:pointer; }
+  .cal-grid .active { background:#ffe6e6; font-weight:600; cursor:pointer; }
+  .cal-grid .blank { color:#aaa; }
   .daysheet h2 { text-align:center; margin:8px 0; }
   .daysheet .section { margin:14px 0; }
   .daysheet .label { font-weight:700; font-size:13px; letter-spacing:1px; margin-bottom:4px; }
@@ -31,27 +32,40 @@
 </div>
 <header>
   <div>P!NK • Summer Carnival 2026</div>
-  <div class="version">v1.0</div>
+  <div class="version">v1.1</div>
 </header>
 <div class="nav">
   <button class="active" onclick="show('calendar')">Calendar</button>
   <button onclick="show('contacts')">Contacts</button>
 </div>
 <div id="calendar" class="content">
-  <div style="text-align:center;font-weight:700;margin-bottom:8px">OCTOBER 2026</div>
+  <div style="text-align:center;font-weight:700;margin-bottom:8px">OCTOBER / NOVEMBER 2026</div>
   <div class="cal-grid">
     <div class="dow">S</div><div class="dow">M</div><div class="dow">T</div><div class="dow">W</div><div class="dow">T</div><div class="dow">F</div><div class="dow">S</div>
-    <div></div><div></div><div></div><div>1</div><div>2</div><div>3</div><div>4</div>
-    <div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div>
-    <div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div>
-    <div>19</div><div>20</div><div>21</div><div>22</div><div>23</div><div>24</div><div>25</div>
-    <div>26</div><div>27</div><div class="show" onclick="show('oct28')">28<br>Day Off</div><div class="show" onclick="show('oct29')">29<br>Day Off</div><div class="show" onclick="show('oct30')">30<br>Load-in</div><div class="show" onclick="show('oct31')">31<br>Show 1</div>
+    <div class="blank">25</div><div class="blank">26</div><div class="blank">27</div><div class="blank">28</div><div class="blank">29</div><div class="blank">30</div>
+    <div class="active" onclick="show('oct31')">31<br>Show 1</div>
+    <div class="active" onclick="show('nov1')">1<br>Show 2</div>
+    <div class="active" onclick="show('nov2')">2<br>Travel</div>
+    <div class="active" onclick="show('nov3')">3<br>Day Off</div>
+    <div class="active" onclick="show('nov4')">4<br>Show</div>
+    <div class="active" onclick="show('nov5')">5<br>Day Off</div>
+    <div class="active" onclick="show('nov6')">6<br>Show</div>
+    <div class="active" onclick="show('nov7')">7<br>Day Off</div>
+    <div class="active" onclick="show('nov8')">8<br>Show</div>
+    <div class="active" onclick="show('nov9')">9<br>Day Off</div>
+    <div class="active" onclick="show('nov10')">10<br>Today</div>
+    <div class="active" onclick="show('nov11')">11<br>Show</div>
+    <div class="active" onclick="show('nov12')">12<br>Day Off</div>
+    <div class="active" onclick="show('nov13')">13<br>Show</div>
+    <div class="active" onclick="show('nov14')">14<br>Travel</div>
+    <div class="active" onclick="show('nov15')">15<br>Day Off</div>
+    <div class="active" onclick="show('nov16')">16<br>Show</div>
+    <div class="active" onclick="show('nov17')">17<br>Day Off</div>
+    <div class="active" onclick="show('nov18')">18<br>Show</div>
+    <div class="active" onclick="show('nov19')">19<br>Day Off</div>
+    <div class="active" onclick="show('nov20')">20<br>Show</div>
   </div>
-  <div style="text-align:center;font-weight:700;margin:16px 0 8px">NOVEMBER 2026</div>
-  <div class="cal-grid">
-    <div class="dow">S</div><div class="dow">M</div><div class="dow">T</div><div class="dow">W</div><div class="dow">T</div><div class="dow">F</div><div class="dow">S</div>
-    <div class="show" onclick="show('nov1')">1<br>Show 2</div><div class="show" onclick="show('nov2')">2<br>Travel</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-  </div>
+  <p style="font-size:13px;color:#666;margin-top:12px">Highlighted days have full day sheets. Other dates are placeholders.</p>
 </div>
 <div id="contacts" class="content hidden">
   <h3>A Party</h3>
@@ -74,28 +88,96 @@
     Prod Rep: Mike Marchetti
   </div>
   <div class="section"><div class="label">SCHEDULE</div>
-    Doors: 5:00 PM<br>
-    Show: 6:00 PM<br>
-    P!NK: 8:30 – 10:30 PM<br>
-    Curfew: 10:30 PM (strict)
+    Doors: 5:00 PM<br>Show: 6:00 PM<br>P!NK: 8:30 – 10:30 PM<br>Curfew: 10:30 PM (strict)
   </div>
 </div>
 <div id="nov1" class="content daysheet hidden">
   <h2>SUNDAY NOVEMBER 1, 2026</h2>
   <div style="text-align:center;font-weight:700">FENWAY PARK • SHOW 2 OF 2<br>BOSTON, MA</div>
+  <div class="section"><div class="label">HOTELS</div>A & B same as Oct 31.<br>C Party moves after show.</div>
+  <div class="section"><div class="label">SCHEDULE</div>Same structure • Curfew 10:30 PM</div>
+</div>
+<div id="nov2" class="content daysheet hidden">
+  <h2>MONDAY NOVEMBER 2, 2026</h2>
+  <div style="text-align:center;font-weight:700">TRAVEL DAY<br>NEW YORK, NY</div>
   <div class="section"><div class="label">HOTELS</div>
-    A & B same as October 31.<br>
-    C Party moves after show.
+    <strong>A Party</strong> – Four Seasons New York<br><strong>B Party</strong> – The Plaza<br><strong>C Party</strong> – Ace Hotel Brooklyn
   </div>
-  <div class="section"><div class="label">SCHEDULE</div>
-    Same structure • Curfew 10:30 PM
+  <div class="section"><div class="label">NOTES</div>Overnight drive from Boston. No show.</div>
+</div>
+<div id="nov4" class="content daysheet hidden">
+  <h2>WEDNESDAY NOVEMBER 4, 2026</h2>
+  <div style="text-align:center;font-weight:700">CITI FIELD<br>NEW YORK, NY</div>
+  <div class="section"><div class="label">HOTELS</div>Same as Nov 2.</div>
+  <div class="section"><div class="label">VENUE</div>Citi Field<br>123-01 Roosevelt Ave, Queens</div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 11:00 PM</div>
+</div>
+<div id="nov6" class="content daysheet hidden">
+  <h2>FRIDAY NOVEMBER 6, 2026</h2>
+  <div style="text-align:center;font-weight:700">PNC PARK<br>PITTSBURGH, PA</div>
+  <div class="section"><div class="label">HOTELS</div>
+    <strong>A Party</strong> – Fairmont Pittsburgh<br><strong>B Party</strong> – Kimpton Hotel Monaco<br><strong>C Party</strong> – Hilton Garden Inn
   </div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:30 PM • Curfew 10:45 PM</div>
+</div>
+<div id="nov8" class="content daysheet hidden">
+  <h2>SUNDAY NOVEMBER 8, 2026</h2>
+  <div style="text-align:center;font-weight:700">NATIONALS PARK<br>WASHINGTON, DC</div>
+  <div class="section"><div class="label">HOTELS</div>
+    <strong>A Party</strong> – The Willard<br><strong>B Party</strong> – Hotel Washington<br><strong>C Party</strong> – Hampton Inn
+  </div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 10:30 PM</div>
+</div>
+<div id="nov10" class="content daysheet hidden">
+  <h2>TUESDAY NOVEMBER 10, 2026</h2>
+  <div style="text-align:center;font-weight:700">TODAY • DAY OFF<br>WASHINGTON, DC</div>
+  <div class="section"><div class="label">HOTELS</div>Same as Nov 8.</div>
+  <div class="section"><div class="label">NOTES</div>Day off. Load-in tomorrow.</div>
+</div>
+<div id="nov11" class="content daysheet hidden">
+  <h2>WEDNESDAY NOVEMBER 11, 2026</h2>
+  <div style="text-align:center;font-weight:700">SHOW DAY<br>WASHINGTON, DC</div>
+  <div class="section"><div class="label">VENUE</div>Nationals Park (same as Nov 8)</div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 10:30 PM</div>
+</div>
+<div id="nov13" class="content daysheet hidden">
+  <h2>FRIDAY NOVEMBER 13, 2026</h2>
+  <div style="text-align:center;font-weight:700">TARGET FIELD<br>MINNEAPOLIS, MN</div>
+  <div class="section"><div class="label">HOTELS</div>
+    <strong>A Party</strong> – Four Seasons Minneapolis<br><strong>B Party</strong> – The Depot<br><strong>C Party</strong> – Hilton Minneapolis
+  </div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 10:30 PM</div>
+</div>
+<div id="nov16" class="content daysheet hidden">
+  <h2>MONDAY NOVEMBER 16, 2026</h2>
+  <div style="text-align:center;font-weight:700">WRIGLEY FIELD<br>CHICAGO, IL</div>
+  <div class="section"><div class="label">HOTELS</div>
+    <strong>A Party</strong> – The Langham<br><strong>B Party</strong> – Hotel EMC2<br><strong>C Party</strong> – Hampton Inn
+  </div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 10:30 PM</div>
+</div>
+<div id="nov18" class="content daysheet hidden">
+  <h2>WEDNESDAY NOVEMBER 18, 2026</h2>
+  <div style="text-align:center;font-weight:700">AMERICAN FAMILY FIELD<br>MILWAUKEE, WI</div>
+  <div class="section"><div class="label">HOTELS</div>
+    <strong>A Party</strong> – The Pfister<br><strong>B Party</strong> – Kimpton Journeyman<br><strong>C Party</strong> – Hilton Milwaukee
+  </div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 10:30 PM</div>
+</div>
+<div id="nov20" class="content daysheet hidden">
+  <h2>FRIDAY NOVEMBER 20, 2026</h2>
+  <div style="text-align:center;font-weight:700">COMERICA PARK<br>DETROIT, MI</div>
+  <div class="section"><div class="label">HOTELS</div>
+    <strong>A Party</strong> – The Shinola Hotel<br><strong>B Party</strong> – Detroit Foundation Hotel<br><strong>C Party</strong> – Hampton Inn
+  </div>
+  <div class="section"><div class="label">SCHEDULE</div>Doors 5:00 PM • Curfew 10:30 PM</div>
 </div>
 <script>
 function enter() { document.getElementById('cover').style.display='none'; }
 function show(id) {
   document.querySelectorAll('.content').forEach(el => el.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('hidden');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   if (id === 'calendar' || id === 'contacts') event.target.classList.add('active');
 }
