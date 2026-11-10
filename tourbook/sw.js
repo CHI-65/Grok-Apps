@@ -1,5 +1,5 @@
-const CACHE = 'tourbook-v4';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png'];
+const CACHE = 'tourbook-v5';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './cover-page1.png'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
