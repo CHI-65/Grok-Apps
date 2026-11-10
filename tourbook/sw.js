@@ -1,8 +1,13 @@
-const CACHE = 'tourbook-v3';
-const ASSETS = ['./', './index.html', './manifest.webmanifest'];
+const CACHE = 'tourbook-v4';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png'];
 
 self.addEventListener('install', e => {
+  self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', e => {
