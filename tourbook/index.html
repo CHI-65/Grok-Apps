@@ -6,100 +6,40 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>P!NK NA 2026 – Digital Tour Book</title>
 <style>
-  body { margin:0; font-family:Georgia, 'Times New Roman', serif; background:#fff; color:#111; font-size:16px; line-height:1.4; }
-  #cover { position:fixed; inset:0; background:#000 url('cover-page1.png') center/cover no-repeat; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; z-index:100; padding:30px 20px 50px; }
-  #cover button { padding:14px 28px; font-size:17px; background:#fff; color:#e10600; border:none; border-radius:6px; font-weight:600; font-family:system-ui; }
-  header { background:#111; color:#fff; padding:12px 16px; position:sticky; top:0; z-index:20; }
-  header h1 { margin:0; font-size:18px; font-family:system-ui; }
-  .version { font-size:11px; opacity:.6; }
-  .search-bar { padding:8px 16px; background:#f5f5f5; border-bottom:1px solid #ddd; }
-  .search-bar input { width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:6px; font-size:16px; }
-  .nav { display:flex; background:#eee; overflow-x:auto; border-bottom:1px solid #ccc; }
-  .nav button { flex:1; min-width:70px; padding:10px 4px; background:none; border:none; color:#333; font-size:13px; }
-  .nav button.active { background:#fff; border-bottom:2px solid #e10600; font-weight:600; }
-  .content { padding:16px; }
-  .itinerary-line { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dotted #ccc; font-size:15px; }
-  .itinerary-line .date { font-weight:600; min-width:90px; }
-  .section-title { font-size:13px; letter-spacing:1px; text-align:center; margin:18px 0 8px; font-weight:700; }
-  .contact-name { font-weight:600; }
-  .party-header { background:#f0f0f0; padding:6px 10px; margin:12px 0 4px; font-weight:700; font-size:14px; }
-  .hidden { display:none !important; }
-  a { color:#06c; text-decoration:none; }
+  body { margin:0; background:#111; color:#fff; font-family:system-ui; }
+  #viewer { height:100vh; display:flex; flex-direction:column; }
+  #pages { flex:1; overflow:auto; background:#222; }
+  #pages img { width:100%; display:block; }
+  .controls { background:#000; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; }
+  .controls button { background:#333; color:#fff; border:none; padding:8px 14px; border-radius:6px; }
+  .page-num { font-size:14px; }
+  .version { position:fixed; bottom:60px; right:12px; font-size:11px; opacity:.5; }
 </style>
 </head>
 <body>
-<div id="cover">
-  <button onclick="enter()">Open Tour Book</button>
-  <div style="color:#fff;font-size:11px;margin-top:10px;opacity:.7">v0.7</div>
+<div id="viewer">
+  <div id="pages">
+    <img src="pages/p-002.png" id="pageimg" alt="Tour book page">
+  </div>
+  <div class="controls">
+    <button onclick="prev()">Prev</button>
+    <span class="page-num" id="pagenum">Page 2</span>
+    <button onclick="next()">Next</button>
+  </div>
 </div>
-<header>
-  <h1>P!NK • Summer Carnival 2026</h1>
-  <div class="version">Digital Tour Book • v0.7</div>
-</header>
-<div class="search-bar">
-  <input type="search" id="search" placeholder="Search…" oninput="doSearch()">
-</div>
-<div class="nav">
-  <button class="active" onclick="show('itinerary')">Itinerary</button>
-  <button onclick="show('contacts')">Contacts</button>
-  <button onclick="show('oct31')">Oct 31</button>
-  <button onclick="show('nov1')">Nov 1</button>
-</div>
-<div id="itinerary" class="content">
-  <div class="section-title">NORTH AMERICA • OCTOBER–NOVEMBER 2026</div>
-  <div class="section-title">OCTOBER 2026</div>
-  <div class="itinerary-line"><span class="date">Wed 28</span><span>Day Off</span><span>Boston</span></div>
-  <div class="itinerary-line"><span class="date">Thu 29</span><span>Day Off</span><span>Boston</span></div>
-  <div class="itinerary-line"><span class="date">Fri 30</span><span>Day Off / Load-in</span><span>Boston</span></div>
-  <div class="itinerary-line"><span class="date">Sat 31</span><span>Show Day • Fenway Park – Show 1 of 2</span><span>Boston</span></div>
-  <div class="section-title">NOVEMBER 2026</div>
-  <div class="itinerary-line"><span class="date">Sun 1</span><span>Show Day • Fenway Park – Show 2 of 2</span><span>Boston</span></div>
-  <div class="itinerary-line"><span class="date">Mon 2</span><span>Travel / Day Off</span><span>New York</span></div>
-</div>
-<div id="contacts" class="content hidden">
-  <div class="party-header">A PARTY</div>
-  <div class="contact-name">Nik Tischler</div>
-  <div style="font-size:14px;color:#444">A Party Tour Manager • <a href="tel:+15550000001">Call</a></div>
-  <div class="party-header">LOCAL</div>
-  <div class="contact-name">Ryan Vangel</div>
-  <div style="font-size:14px;color:#444">Promoter • <a href="tel:+16176493226">+1 617-649-3226</a></div>
-  <div class="contact-name">Mike Marchetti</div>
-  <div style="font-size:14px;color:#444">Production Rep • <a href="tel:+15083317599">+1 508-331-7599</a></div>
-</div>
-<div id="oct31" class="content hidden">
-  <div class="section-title">SATURDAY OCTOBER 31, 2026</div>
-  <div style="text-align:center;font-weight:700;margin-bottom:12px">Fenway Park • Show 1 of 2<br>Boston, MA</div>
-  <div class="party-header">HOTELS</div>
-  <strong>A Party</strong> – Four Seasons Boylston<br>200 Boylston St • (617) 338-4400<br><br>
-  <strong>B Party</strong> – The Ritz-Carlton<br>10 Avery St<br><br>
-  <strong>C Party</strong> – Commonwealth Hotel<br>500 Commonwealth Ave • (617) 933-5000
-  <div class="party-header">VENUE</div>
-  Fenway Park<br>4 Yawkey Way, Boston, MA 02215<br>
-  Promoter: Live Nation • Ryan Vangel<br>
-  Prod Rep: Mike Marchetti
-  <div class="party-header">SCHEDULE</div>
-  Doors 5:00 PM • Show 6:00 PM<br>
-  P!NK 8:30 – 10:30 PM<br>
-  Curfew 10:30 PM (strict)
-</div>
-<div id="nov1" class="content hidden">
-  <div class="section-title">SUNDAY NOVEMBER 1, 2026</div>
-  <div style="text-align:center;font-weight:700;margin-bottom:12px">Fenway Park • Show 2 of 2<br>Boston, MA</div>
-  <div class="party-header">HOTELS</div>
-  A & B same as October 31.<br>
-  C Party moves after show.
-  <div class="party-header">SCHEDULE</div>
-  Same structure • Curfew 10:30 PM
-</div>
+<div class="version">v0.8</div>
 <script>
-function enter() { document.getElementById('cover').style.display = 'none'; }
-function show(id) {
-  document.querySelectorAll('.content').forEach(el => el.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+const pages = [
+  { src: 'pages/p-002.png', label: 'Itinerary' },
+  { src: 'pages/p-003.png', label: 'Itinerary continued' }
+];
+let current = 0;
+function showPage() {
+  document.getElementById('pageimg').src = pages[current].src;
+  document.getElementById('pagenum').textContent = 'Page ' + (current + 2);
 }
-function doSearch() {}
+function prev() { if (current > 0) { current--; showPage(); } }
+function next() { if (current < pages.length - 1) { current++; showPage(); } }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
