@@ -12,6 +12,8 @@
   header { background:#111; color:#fff; padding:10px 16px; position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
   .nav button { background:#333; color:#fff; border:none; padding:8px 12px; margin:0 4px; border-radius:6px; }
   .nav button.active { background:#e10600; }
+  #banner { background:#e10600; color:#fff; padding:10px 16px; text-align:center; font-family:system-ui; display:none; }
+  #banner button { background:#fff; color:#e10600; border:none; padding:6px 12px; border-radius:4px; margin-left:10px; font-weight:600; }
   #pageview { height:calc(100vh - 50px); overflow:auto; background:#eee; }
   #pageview img { width:100%; display:block; }
   .controls { background:#111; color:#fff; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
@@ -32,11 +34,13 @@
 <div id="cover">
   <button onclick="enter()">Open Tour Book</button>
 </div>
+<div id="banner">New version available <button onclick="location.reload(true)">Refresh</button></div>
 <header>
-  <div>P!NK • 2026 <span class="version">v1.7</span></div>
+  <div>P!NK • 2026 <span class="version" id="ver">v1.8</span></div>
   <div class="nav">
     <button class="active" onclick="showView('pages')">Pages</button>
     <button onclick="showView('calendar')">Calendar</button>
+    <button onclick="location.reload(true)">Refresh</button>
   </div>
 </header>
 <div id="pages">
@@ -60,6 +64,16 @@
 </div>
 <script>
 function enter() { document.getElementById('cover').style.display='none'; }
+
+const CURRENT = '1.8';
+fetch('https://chi-65.github.io/Grok-Apps/tourbook/index.html?v=' + Date.now())
+  .then(r => r.text())
+  .then(html => {
+    const m = html.match(/v([0-9.]+)/);
+    if (m && m[1] !== CURRENT) {
+      document.getElementById('banner').style.display = 'block';
+    }
+  }).catch(()=>{});
 
 let currentPage = 2;
 const maxPage = 42;
