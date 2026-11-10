@@ -14,32 +14,39 @@
   .controls button { background:#333; color:#fff; border:none; padding:8px 14px; border-radius:6px; }
   .page-num { font-size:14px; }
   .version { position:fixed; bottom:60px; right:12px; font-size:11px; opacity:.5; }
+  input[type=number] { width:60px; background:#222; color:#fff; border:1px solid #444; padding:4px; }
 </style>
 </head>
 <body>
 <div id="viewer">
   <div id="pages">
-    <img src="pages/p-002.png" id="pageimg" alt="Tour book page">
+    <img src="pages/p-001.png" id="pageimg" alt="Tour book page">
   </div>
   <div class="controls">
     <button onclick="prev()">Prev</button>
-    <span class="page-num" id="pagenum">Page 2</span>
+    <span>
+      <input type="number" id="jumpto" min="1" max="145" value="1" onchange="jump()">
+      <span class="page-num"> / 145</span>
+    </span>
     <button onclick="next()">Next</button>
   </div>
 </div>
-<div class="version">v0.8</div>
+<div class="version">v0.9</div>
 <script>
-const pages = [
-  { src: 'pages/p-002.png', label: 'Itinerary' },
-  { src: 'pages/p-003.png', label: 'Itinerary continued' }
-];
-let current = 0;
+let current = 1;
+const total = 145;
+function pad(n) { return n.toString().padStart(3,'0'); }
 function showPage() {
-  document.getElementById('pageimg').src = pages[current].src;
-  document.getElementById('pagenum').textContent = 'Page ' + (current + 2);
+  document.getElementById('pageimg').src = 'pages/p-' + pad(current) + '.png';
+  document.getElementById('jumpto').value = current;
 }
-function prev() { if (current > 0) { current--; showPage(); } }
-function next() { if (current < pages.length - 1) { current++; showPage(); } }
+function prev() { if (current > 1) { current--; showPage(); } }
+function next() { if (current < total) { current++; showPage(); } }
+function jump() {
+  let n = parseInt(document.getElementById('jumpto').value);
+  if (n >= 1 && n <= total) { current = n; showPage(); }
+}
+showPage();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
