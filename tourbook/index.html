@@ -14,8 +14,8 @@
   .nav button.active { background:#e10600; }
   #banner { background:#e10600; color:#fff; padding:10px 16px; text-align:center; font-family:system-ui; display:none; }
   #banner button { background:#fff; color:#e10600; border:none; padding:6px 12px; border-radius:4px; margin-left:10px; font-weight:600; }
-  #pageview { height:calc(100vh - 50px); overflow:auto; background:#eee; }
-  #pageview img { width:100%; display:block; }
+  #pageview { height:calc(100vh - 50px); overflow:hidden; background:#eee; position:relative; }
+  #pageimg { width:100%; display:block; transition: transform 0.3s ease; }
   .controls { background:#111; color:#fff; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
   .content { padding:20px 16px; min-height:calc(100vh - 50px); }
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:12px; }
@@ -36,7 +36,7 @@
 </div>
 <div id="banner">New version available <button onclick="location.reload(true)">Refresh</button></div>
 <header>
-  <div>P!NK • 2026 <span class="version" id="ver">v1.8</span></div>
+  <div>P!NK • 2026 <span class="version" id="ver">v1.9</span></div>
   <div class="nav">
     <button class="active" onclick="showView('pages')">Pages</button>
     <button onclick="showView('calendar')">Calendar</button>
@@ -65,7 +65,7 @@
 <script>
 function enter() { document.getElementById('cover').style.display='none'; }
 
-const CURRENT = '1.8';
+const CURRENT = '1.9';
 fetch('https://chi-65.github.io/Grok-Apps/tourbook/index.html?v=' + Date.now())
   .then(r => r.text())
   .then(html => {
@@ -78,22 +78,46 @@ fetch('https://chi-65.github.io/Grok-Apps/tourbook/index.html?v=' + Date.now())
 let currentPage = 2;
 const maxPage = 42;
 let touchStartX = 0;
+let isAnimating = false;
+
+const img = document.getElementById('pageimg');
 
 document.getElementById('pageview').addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
 });
 document.getElementById('pageview').addEventListener('touchend', e => {
+  if (isAnimating) return;
   const dx = e.changedTouches[0].clientX - touchStartX;
-  if (dx > 50) prevPage();
-  if (dx < -50) nextPage();
+  if (dx > 60) turnPage(-1);
+  if (dx < -60) turnPage(1);
 });
 
+function turnPage(dir) {
+  const next = currentPage + dir;
+  if (next < 2 || next > maxPage) return;
+  isAnimating = true;
+  img.style.transition = 'transform 0.35s ease';
+  img.style.transform = `translateX(${dir > 0 ? '-100%' : '100%'})`;
+  setTimeout(() => {
+    currentPage = next;
+    img.src = 'pages/p-' + String(currentPage).padStart(3,'0') + '.png';
+    img.style.transition = 'none';
+    img.style.transform = `translateX(${dir > 0 ? '100%' : '-100%'})`;
+    setTimeout(() => {
+      img.style.transition = 'transform 0.35s ease';
+      img.style.transform = 'translateX(0)';
+      document.getElementById('pagenum').textContent = 'Page ' + currentPage;
+      setTimeout(() => { isAnimating = false; }, 350);
+    }, 20);
+  }, 350);
+}
+
 function showPage() {
-  document.getElementById('pageimg').src = 'pages/p-' + String(currentPage).padStart(3,'0') + '.png';
+  img.src = 'pages/p-' + String(currentPage).padStart(3,'0') + '.png';
   document.getElementById('pagenum').textContent = 'Page ' + currentPage;
 }
-function prevPage() { if (currentPage > 2) { currentPage--; showPage(); } }
-function nextPage() { if (currentPage < maxPage) { currentPage++; showPage(); } }
+function prevPage() { turnPage(-1); }
+function nextPage() { turnPage(1); }
 
 const filled = {
   '2026-10-31': { status: 'Show 1 of 2 • Fenway Park', hotels: 'A: Four Seasons Boylston<br>B: The Ritz-Carlton<br>C: Commonwealth Hotel', venue: 'Fenway Park<br>4 Yawkey Way, Boston, MA', schedule: 'Doors 5:00 PM<br>P!NK 8:30–10:30 PM<br>Curfew 10:30 PM' },
