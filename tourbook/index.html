@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link rel="manifest" href="manifest.webmanifest">
-<title>P!NK NA 2023 – Digital Tour Book</title>
+<title>P!NK NA 2026 – Digital Tour Book</title>
 <style>
   :root { --bg:#0d0d0d; --card:#1a1a1a; --accent:#e10600; --text:#f5f5f5; --muted:#aaa; }
   * { box-sizing:border-box; }
@@ -42,12 +42,12 @@
 <body>
 <div id="cover">
   <button onclick="enter()">Open Tour Book</button>
-  <div style="color:white;font-size:12px;margin-top:12px;opacity:.8">v0.4</div>
+  <div style="color:white;font-size:12px;margin-top:12px;opacity:.8">v0.5</div>
 </div>
 <header>
-  <h1>P!NK Summer Carnival 2023</h1>
+  <h1>P!NK Summer Carnival 2026</h1>
   <div class="sub">Digital Tour Book • Boston Stretch</div>
-  <div class="version">v0.4</div>
+  <div class="version">v0.5</div>
 </header>
 <div class="search-bar">
   <input type="search" id="search" placeholder="Search names, hotels, cities, venues…" oninput="doSearch()">
@@ -62,13 +62,13 @@
   <button class="active" onclick="show('today')">Today</button>
   <button onclick="show('itinerary')">Itinerary</button>
   <button onclick="show('contacts')">People</button>
-  <button onclick="show('day31')">Jul 31</button>
-  <button onclick="show('day1')">Aug 1</button>
+  <button onclick="show('oct5')">Oct 5</button>
+  <button onclick="show('oct6')">Oct 6</button>
 </div>
 <div id="today" class="content">
   <div class="card today">
     <div class="updated">UPDATED 2 min ago • Curfew confirmed</div>
-    <h2>Today • Monday July 31</h2>
+    <h2>Today • Monday October 5</h2>
     <div class="big">Boston, MA • EDT</div>
     <p>Show 1 of 2 • Fenway Park</p>
     <div class="row"><span class="label">Doors</span><span>5:00 PM</span></div>
@@ -80,7 +80,7 @@
     <div class="row"><span class="label">Tonight</span><span>Overnight in Boston</span></div>
   </div>
   <div class="card">
-    <h2>Tomorrow • Tuesday August 1</h2>
+    <h2>Tomorrow • Tuesday October 6</h2>
     <div class="big">Boston, MA • EDT</div>
     <p>Show 2 of 2 • Fenway Park</p>
     <div class="row"><span class="label">Doors</span><span>5:00 PM</span></div>
@@ -91,12 +91,12 @@
 <div id="itinerary" class="content hidden">
   <div class="card">
     <h2>Boston Stretch</h2>
-    <div class="row"><span>Fri 28</span><span>Day Off • Boston</span></div>
-    <div class="row"><span>Sat 29</span><span>Day Off • Boston</span></div>
-    <div class="row"><span>Sun 30</span><span>Day Off / Load-in • Boston</span></div>
-    <div class="row"><span>Mon 31</span><span>Show 1 • Fenway Park</span></div>
-    <div class="row"><span>Tue 1</span><span>Show 2 • Fenway Park</span></div>
-    <div class="row"><span>Wed 2</span><span>Travel / Day Off • New York</span></div>
+    <div class="row"><span>Fri Oct 2</span><span>Day Off • Boston</span></div>
+    <div class="row"><span>Sat Oct 3</span><span>Day Off • Boston</span></div>
+    <div class="row"><span>Sun Oct 4</span><span>Day Off / Load-in • Boston</span></div>
+    <div class="row"><span>Mon Oct 5</span><span>Show 1 • Fenway Park</span></div>
+    <div class="row"><span>Tue Oct 6</span><span>Show 2 • Fenway Park</span></div>
+    <div class="row"><span>Wed Oct 7</span><span>Travel / Day Off • New York</span></div>
   </div>
 </div>
 <div id="contacts" class="content hidden">
@@ -125,10 +125,10 @@
     </div>
   </div>
 </div>
-<div id="day31" class="content hidden">
+<div id="oct5" class="content hidden">
   <div class="card">
     <div class="updated">UPDATED • Strict curfew confirmed 10:30 PM</div>
-    <h2>Monday July 31, 2023</h2>
+    <h2>Monday October 5, 2026</h2>
     <div class="big">Fenway Park • Show 1 of 2<br>Boston, MA • EDT</div>
     <h3>Hotels</h3>
     <strong>A Party</strong> – Four Seasons Boylston<br>200 Boylston St • (617) 338-4400<br>3 mi to venue
@@ -149,15 +149,15 @@
     All parties overnight in Boston
   </div>
 </div>
-<div id="day1" class="content hidden">
+<div id="oct6" class="content hidden">
   <div class="card">
-    <h2>Tuesday August 1, 2023</h2>
+    <h2>Tuesday October 6, 2026</h2>
     <div class="big">Fenway Park • Show 2 of 2<br>Boston, MA • EDT</div>
     <h3>Hotels</h3>
     A & B same as yesterday.<br>
     C Party: Ace Brooklyn after show (overnight drive)
     <h3>Venue</h3>
-    Same as July 31
+    Same as October 5
     <h3>Schedule</h3>
     Same structure • Curfew 10:30 PM
     <h3>Tonight</h3>
