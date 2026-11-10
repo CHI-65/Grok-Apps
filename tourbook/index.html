@@ -6,23 +6,23 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>P!NK NA 2026 – Digital Tour Book</title>
 <style>
-  body { margin:0; background:#111; color:#fff; font-family:system-ui; }
+  body { margin:0; background:#fff; color:#111; font-family:Georgia, 'Times New Roman', serif; }
   #cover { position:fixed; inset:0; background:#000 url('cover-page1.png') center/cover no-repeat; display:flex; align-items:flex-end; justify-content:center; padding-bottom:40px; z-index:100; }
-  #cover button { padding:14px 28px; background:#fff; color:#e10600; border:none; border-radius:6px; font-weight:600; }
-  header { background:#000; padding:10px 16px; position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; }
+  #cover button { padding:14px 28px; background:#fff; color:#e10600; border:none; border-radius:6px; font-weight:600; font-family:system-ui; }
+  header { background:#111; color:#fff; padding:10px 16px; position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
   .nav button { background:#333; color:#fff; border:none; padding:8px 12px; margin:0 4px; border-radius:6px; }
   .nav button.active { background:#e10600; }
-  #pageview { height:calc(100vh - 50px); overflow:auto; background:#222; }
+  #pageview { height:calc(100vh - 50px); overflow:auto; background:#eee; }
   #pageview img { width:100%; display:block; }
-  .controls { background:#000; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
-  .content { padding:16px; background:#fff; color:#111; min-height:calc(100vh - 50px); }
-  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center; font-size:13px; }
-  .cal-grid div { padding:8px 2px; border:1px solid #ddd; min-height:48px; cursor:pointer; }
+  .controls { background:#111; color:#fff; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
+  .content { padding:20px 16px; min-height:calc(100vh - 50px); }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:12px; }
+  .cal-grid div { padding:6px 2px; border:1px solid #ddd; min-height:44px; cursor:pointer; }
   .cal-grid .dow { background:#333; color:#fff; font-weight:600; border:none; }
   .cal-grid .filled { background:#ffe6e6; font-weight:600; }
-  .daysheet h2 { text-align:center; margin:8px 0; }
-  .daysheet .section { margin:14px 0; }
-  .daysheet .label { font-weight:700; font-size:13px; letter-spacing:1px; margin-bottom:4px; }
+  .daysheet h2 { text-align:center; margin:4px 0 12px; font-size:18px; letter-spacing:1px; }
+  .daysheet .section { margin:16px 0; }
+  .daysheet .label { font-weight:700; font-size:12px; letter-spacing:1.5px; margin-bottom:6px; border-bottom:1px solid #111; padding-bottom:2px; }
   .empty { color:#999; font-style:italic; }
   .hidden { display:none !important; }
   .version { font-size:11px; opacity:.6; }
@@ -33,7 +33,7 @@
   <button onclick="enter()">Open Tour Book</button>
 </div>
 <header>
-  <div>P!NK • 2026 <span class="version">v1.5</span></div>
+  <div>P!NK • 2026 <span class="version">v1.6</span></div>
   <div class="nav">
     <button class="active" onclick="showView('pages')">Pages</button>
     <button onclick="showView('calendar')">Calendar</button>
@@ -48,21 +48,32 @@
   </div>
 </div>
 <div id="calendar" class="content hidden">
-  <div style="text-align:center;font-weight:700;margin-bottom:8px">OCTOBER 2026</div>
+  <div style="text-align:center;font-weight:700;margin-bottom:8px;letter-spacing:1px">OCTOBER 2026</div>
   <div class="cal-grid" id="octCal"></div>
-  <div style="text-align:center;font-weight:700;margin:16px 0 8px">NOVEMBER 2026</div>
+  <div style="text-align:center;font-weight:700;margin:16px 0 8px;letter-spacing:1px">NOVEMBER 2026</div>
   <div class="cal-grid" id="novCal"></div>
 </div>
 <div id="daypage" class="content daysheet hidden">
   <h2 id="daytitle"></h2>
   <div id="daybody"></div>
-  <button onclick="showView('calendar')" style="margin-top:20px">Back to Calendar</button>
+  <div style="text-align:center;margin-top:24px"><button onclick="showView('calendar')" style="padding:10px 20px">Back to Calendar</button></div>
 </div>
 <script>
 function enter() { document.getElementById('cover').style.display='none'; }
 
 let currentPage = 2;
 const maxPage = 42;
+let touchStartX = 0;
+
+document.getElementById('pageview').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+document.getElementById('pageview').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (dx > 50) prevPage();
+  if (dx < -50) nextPage();
+});
+
 function showPage() {
   document.getElementById('pageimg').src = 'pages/p-' + String(currentPage).padStart(3,'0') + '.png';
   document.getElementById('pagenum').textContent = 'Page ' + currentPage;
