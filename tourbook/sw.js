@@ -1,4 +1,4 @@
-const CACHE = 'tourbook-v2';
+const CACHE = 'tourbook-v3';
 const ASSETS = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {
