@@ -8,12 +8,9 @@
 <title>P!NK Tour Book – Editor</title>
 <style>
   body { margin:0; background:#eee; font-family:Arial,Helvetica,sans-serif; }
-  #login { position:fixed; inset:0; background:#111; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:200; }
-  #login input { padding:12px; font-size:16px; width:220px; margin:8px; border-radius:6px; border:none; }
-  #login button { padding:12px 24px; background:#e10600; color:#fff; border:none; border-radius:6px; font-weight:600; }
   header { background:#111; color:#fff; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
   .nav button { background:#333; color:#fff; border:none; padding:8px 12px; margin:0 4px; border-radius:6px; }
-  .page { width:100%; max-width:8.5in; margin:0 auto; background:#fff; min-height:100vh; padding:12px 14px 40px; font-size:9px; line-height:1.15; color:#000; }
+  .page { width:100%; max-width:8.5in; margin:0 auto; background:#fff; min-height:calc(100vh - 50px); padding:12px 14px 40px; font-size:9px; line-height:1.15; color:#000; }
   .header-banner { background:#000; color:#fff; text-align:center; font-weight:700; font-size:11px; letter-spacing:1px; padding:3px 0; margin-bottom:4px; }
   .header-row { display:flex; border:1.5px solid #000; margin-bottom:8px; }
   .header-left { flex:1; padding:4px 6px; font-weight:700; font-size:11px; text-align:center; border-right:1.5px solid #000; }
@@ -29,53 +26,34 @@
   .editable { background:#fffbe6; border:1px dashed #ccc; padding:1px 2px; min-height:12px; }
   .schedule-box { border:1.5px solid #000; padding:3px 6px; font-size:7.5px; }
   .schedule-box .stitle { font-weight:700; text-align:center; font-size:9px; border-bottom:1px solid #000; margin-bottom:3px; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:12px; }
+  .cal-grid div { padding:6px 2px; border:1px solid #ddd; min-height:40px; cursor:pointer; }
+  .cal-grid .dow { background:#333; color:#fff; font-weight:600; }
+  .cal-grid .filled { background:#ffe6e6; font-weight:600; }
   .hidden { display:none !important; }
   .edit-btn { background:#e10600; color:#fff; border:none; padding:8px 16px; border-radius:6px; margin:8px 4px; font-family:system-ui; }
 </style>
 </head>
 <body>
-<div id="login">
-  <h2>Editor Access</h2>
-  <input type="password" id="pw" placeholder="Password">
-  <button onclick="checkPw()">Unlock</button>
-  <div id="err" style="color:#f66;margin-top:8px"></div>
-</div>
-<div id="app" class="hidden">
-  <header>
-    <div>Editor • v1.1</div>
-    <div class="nav">
-      <button onclick="show('calendar')">Calendar</button>
-      <button onclick="logout()">Lock</button>
-    </div>
-  </header>
-  <div id="calendar" class="page">
-    <div style="text-align:center;font-weight:700;font-size:14px;margin-bottom:8px">NOVEMBER 2026</div>
-    <div class="cal-grid" id="novCal" style="font-size:12px"></div>
+<header>
+  <div>Editor • v1.2</div>
+  <div class="nav">
+    <button onclick="show('calendar')">Calendar</button>
   </div>
-  <div id="daypage" class="page hidden">
-    <div id="sheet"></div>
-    <div style="text-align:center;margin-top:12px">
-      <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
-      <button class="edit-btn" id="saveBtn" style="display:none;background:#060" onclick="saveDay()">Save</button>
-      <button class="edit-btn" style="background:#333" onclick="show('calendar')">Back</button>
-    </div>
+</header>
+<div id="calendar" class="page">
+  <div style="text-align:center;font-weight:700;font-size:14px;margin-bottom:8px">NOVEMBER 2026</div>
+  <div class="cal-grid" id="novCal"></div>
+</div>
+<div id="daypage" class="page hidden">
+  <div id="sheet"></div>
+  <div style="text-align:center;margin-top:12px">
+    <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
+    <button class="edit-btn" id="saveBtn" style="display:none;background:#060" onclick="saveDay()">Save</button>
+    <button class="edit-btn" style="background:#333" onclick="show('calendar')">Back</button>
   </div>
 </div>
 <script>
-const PASS = 'tour2026';
-function checkPw() {
-  if (document.getElementById('pw').value === PASS) {
-    document.getElementById('login').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    buildCal();
-  } else document.getElementById('err').textContent = 'Wrong password';
-}
-function logout() {
-  document.getElementById('app').classList.add('hidden');
-  document.getElementById('login').classList.remove('hidden');
-  document.getElementById('pw').value = '';
-}
-
 const data = {
   '2026-11-10': {
     banner: 'DAY OFF',
@@ -101,7 +79,7 @@ function buildCal() {
   for (let d=1; d<=30; d++) {
     const key = `2026-11-${String(d).padStart(2,'0')}`;
     const label = data[key] ? data[key].banner : '';
-    html += `<div class="${data[key]?'filled':''}" onclick="openDay('${key}')" style="padding:6px 2px;border:1px solid #ddd;min-height:40px;cursor:pointer">${d}${label?'<br>'+label:''}</div>`;
+    html += `<div class="${data[key]?'filled':''}" onclick="openDay('${key}')">${d}${label?'<br>'+label:''}</div>`;
   }
   cal.innerHTML = html;
 }
@@ -162,7 +140,6 @@ function renderSheet() {
 }
 function toggleEdit() { editing = true; renderSheet(); }
 function saveDay() {
-  // For now just confirm; next step writes to shared JSON
   alert('Saved (local). Next: push to shared data so crew app updates.');
   editing = false;
   renderSheet();
@@ -172,6 +149,7 @@ function show(id) {
   document.getElementById('daypage').classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
 }
+buildCal();
 </script>
 </body>
 </html>
