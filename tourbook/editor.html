@@ -7,23 +7,30 @@
 <link rel="icon" href="icon-master-192.png">
 <title>P!NK Tour Book – Editor</title>
 <style>
-  body { margin:0; font-family:system-ui; background:#111; color:#fff; }
-  #login { position:fixed; inset:0; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  body { margin:0; background:#eee; font-family:Arial,Helvetica,sans-serif; }
+  #login { position:fixed; inset:0; background:#111; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:200; }
   #login input { padding:12px; font-size:16px; width:220px; margin:8px; border-radius:6px; border:none; }
   #login button { padding:12px 24px; background:#e10600; color:#fff; border:none; border-radius:6px; font-weight:600; }
-  header { background:#000; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; }
+  header { background:#111; color:#fff; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; font-family:system-ui; }
   .nav button { background:#333; color:#fff; border:none; padding:8px 12px; margin:0 4px; border-radius:6px; }
-  .content { padding:16px; background:#fff; color:#111; min-height:calc(100vh - 50px); }
-  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:12px; }
-  .cal-grid div { padding:6px 2px; border:1px solid #ddd; min-height:44px; cursor:pointer; }
-  .cal-grid .dow { background:#333; color:#fff; }
-  .cal-grid .filled { background:#ffe6e6; font-weight:600; }
-  .daysheet h2 { text-align:center; }
-  .field { margin:10px 0; }
-  .field label { font-weight:700; font-size:12px; display:block; }
-  .field input, .field textarea { width:100%; padding:8px; font-size:14px; border:1px solid #ccc; border-radius:4px; }
+  .page { width:100%; max-width:8.5in; margin:0 auto; background:#fff; min-height:100vh; padding:12px 14px 40px; font-size:9px; line-height:1.15; color:#000; }
+  .header-banner { background:#000; color:#fff; text-align:center; font-weight:700; font-size:11px; letter-spacing:1px; padding:3px 0; margin-bottom:4px; }
+  .header-row { display:flex; border:1.5px solid #000; margin-bottom:8px; }
+  .header-left { flex:1; padding:4px 6px; font-weight:700; font-size:11px; text-align:center; border-right:1.5px solid #000; }
+  .header-right { width:2.1in; text-align:center; font-size:8px; }
+  .header-right .date { font-weight:700; font-size:9px; border-bottom:1px solid #000; padding:2px 0; }
+  .section-title { text-align:center; font-weight:700; font-size:10px; margin:6px 0 2px; position:relative; }
+  .section-title::before, .section-title::after { content:""; position:absolute; top:50%; width:28%; height:1px; background:#000; }
+  .section-title::before { left:0; } .section-title::after { right:0; }
+  .party-line { font-size:8.5px; margin:1px 0; }
+  .hotel-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0 10px; margin:4px 0 6px; font-size:7.5px; }
+  .party-label { font-weight:700; font-size:8px; text-align:center; border-bottom:1px solid #000; margin-bottom:2px; }
+  .hotel-name { font-weight:700; text-align:center; }
+  .editable { background:#fffbe6; border:1px dashed #ccc; padding:1px 2px; min-height:12px; }
+  .schedule-box { border:1.5px solid #000; padding:3px 6px; font-size:7.5px; }
+  .schedule-box .stitle { font-weight:700; text-align:center; font-size:9px; border-bottom:1px solid #000; margin-bottom:3px; }
   .hidden { display:none !important; }
-  .edit-btn { background:#e10600; color:#fff; border:none; padding:10px 20px; border-radius:6px; margin-top:12px; }
+  .edit-btn { background:#e10600; color:#fff; border:none; padding:8px 16px; border-radius:6px; margin:8px 4px; font-family:system-ui; }
 </style>
 </head>
 <body>
@@ -35,22 +42,23 @@
 </div>
 <div id="app" class="hidden">
   <header>
-    <div>Editor • v1.0</div>
+    <div>Editor • v1.1</div>
     <div class="nav">
       <button onclick="show('calendar')">Calendar</button>
       <button onclick="logout()">Lock</button>
     </div>
   </header>
-  <div id="calendar" class="content">
-    <div style="text-align:center;font-weight:700">NOVEMBER 2026</div>
-    <div class="cal-grid" id="novCal"></div>
+  <div id="calendar" class="page">
+    <div style="text-align:center;font-weight:700;font-size:14px;margin-bottom:8px">NOVEMBER 2026</div>
+    <div class="cal-grid" id="novCal" style="font-size:12px"></div>
   </div>
-  <div id="daypage" class="content daysheet hidden">
-    <h2 id="daytitle"></h2>
-    <div id="dayform"></div>
-    <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
-    <button class="edit-btn" id="saveBtn" style="display:none;background:#060" onclick="saveDay()">Save</button>
-    <div style="margin-top:16px"><button onclick="show('calendar')">Back</button></div>
+  <div id="daypage" class="page hidden">
+    <div id="sheet"></div>
+    <div style="text-align:center;margin-top:12px">
+      <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
+      <button class="edit-btn" id="saveBtn" style="display:none;background:#060" onclick="saveDay()">Save</button>
+      <button class="edit-btn" style="background:#333" onclick="show('calendar')">Back</button>
+    </div>
   </div>
 </div>
 <script>
@@ -60,9 +68,7 @@ function checkPw() {
     document.getElementById('login').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     buildCal();
-  } else {
-    document.getElementById('err').textContent = 'Wrong password';
-  }
+  } else document.getElementById('err').textContent = 'Wrong password';
 }
 function logout() {
   document.getElementById('app').classList.add('hidden');
@@ -71,59 +77,95 @@ function logout() {
 }
 
 const data = {
-  '2026-11-10': { status: 'Today • Day Off', hotels: 'Same as Nov 8', venue: '—', schedule: 'Day off. Load-in tomorrow.', notes: '' },
-  '2026-11-11': { status: 'Show • Nationals Park', hotels: 'Same as Nov 8', venue: 'Nationals Park', schedule: 'Doors 5:00 PM • Curfew 10:30 PM', notes: '' }
+  '2026-11-10': {
+    banner: 'DAY OFF',
+    title: 'DAY OFF',
+    date: 'TUESDAY, NOVEMBER 10, 2026',
+    city: 'WASHINGTON, DC',
+    tz: 'EST',
+    notes: ['A PARTY  DAY OFF IN WASHINGTON', 'B PARTY  DAY OFF IN WASHINGTON', 'C PARTY  DAY OFF IN WASHINGTON'],
+    hotels: {
+      a: { name:'THE WILLARD', addr:'1401 PENNSYLVANIA AVE NW\nWASHINGTON, DC 20004', tel:'(202) 628-9100', onsite:'AVAILABLE', bars:'1', rest:'1', health:'FITNESS CENTER', windows:'NOT OPENABLE', airport:'5.2 MILES', venue:'1.1 MILES' },
+      b: { name:'HOTEL WASHINGTON', addr:'515 15TH ST NW\nWASHINGTON, DC 20004', tel:'(202) 661-2400', onsite:'AVAILABLE', bars:'1', rest:'1', health:'FITNESS CENTER', windows:'OPENABLE', airport:'5.0 MILES', venue:'0.8 MILES' },
+      c: { name:'HAMPTON INN', addr:'1729 H ST NW\nWASHINGTON, DC 20006', tel:'(202) 296-1006', onsite:'AVAILABLE', bars:'0', rest:'0', health:'FITNESS CENTER', windows:'NOT OPENABLE', airport:'5.4 MILES', venue:'1.3 MILES' }
+    },
+    venue: 'NATIONALS PARK\n1500 SOUTH CAPITOL ST SE\nWASHINGTON, DC 20003',
+    schedule: 'Day off. Load-in tomorrow.',
+    tonight: ['A PARTY  OVERNIGHT IN WASHINGTON', 'B PARTY  OVERNIGHT IN WASHINGTON', 'C PARTY  OVERNIGHT IN WASHINGTON']
+  }
 };
 
 function buildCal() {
   const cal = document.getElementById('novCal');
   let html = '<div class="dow">S</div><div class="dow">M</div><div class="dow">T</div><div class="dow">W</div><div class="dow">T</div><div class="dow">F</div><div class="dow">S</div>';
-  for (let d = 1; d <= 30; d++) {
+  for (let d=1; d<=30; d++) {
     const key = `2026-11-${String(d).padStart(2,'0')}`;
-    const label = data[key] ? data[key].status.split('•')[0].trim() : '';
-    html += `<div class="${data[key]?'filled':''}" onclick="openDay('${key}')">${d}${label?'<br>'+label:''}</div>`;
+    const label = data[key] ? data[key].banner : '';
+    html += `<div class="${data[key]?'filled':''}" onclick="openDay('${key}')" style="padding:6px 2px;border:1px solid #ddd;min-height:40px;cursor:pointer">${d}${label?'<br>'+label:''}</div>`;
   }
   cal.innerHTML = html;
 }
 
-let currentKey = null;
-let editing = false;
+let currentKey = null, editing = false;
 function openDay(key) {
   currentKey = key;
   editing = false;
-  const date = new Date(key + 'T12:00:00');
-  document.getElementById('daytitle').textContent = date.toLocaleDateString('en-US', {weekday:'long',month:'long',day:'numeric',year:'numeric'}).toUpperCase();
-  renderForm();
+  renderSheet();
   show('daypage');
 }
-function renderForm() {
-  const d = data[currentKey] || { status:'', hotels:'', venue:'', schedule:'', notes:'' };
-  const ro = editing ? '' : 'readonly';
-  document.getElementById('dayform').innerHTML = `
-    <div class="field"><label>STATUS</label><input ${ro} id="fstatus" value="${d.status||''}"></div>
-    <div class="field"><label>HOTELS</label><textarea ${ro} id="fhotels" rows="3">${d.hotels||''}</textarea></div>
-    <div class="field"><label>VENUE</label><textarea ${ro} id="fvenue" rows="2">${d.venue||''}</textarea></div>
-    <div class="field"><label>SCHEDULE</label><textarea ${ro} id="fschedule" rows="3">${d.schedule||''}</textarea></div>
-    <div class="field"><label>NOTES</label><textarea ${ro} id="fnotes" rows="2">${d.notes||''}</textarea></div>
+function e(id, val) {
+  if (!editing) return val || '';
+  return `<span class="editable" contenteditable="true" id="${id}">${val||''}</span>`;
+}
+function renderSheet() {
+  const d = data[currentKey] || {};
+  const h = d.hotels || {a:{},b:{},c:{}};
+  document.getElementById('sheet').innerHTML = `
+    <div class="header-banner">${e('banner', d.banner||'DAY')}</div>
+    <div class="header-row">
+      <div class="header-left">${e('title', d.title||'')}</div>
+      <div class="header-right">
+        <div class="date">${e('date', d.date||'')}</div>
+        <div>${e('city', d.city||'')}</div>
+        <div>${e('tz', d.tz||'')}</div>
+      </div>
+    </div>
+    <div class="section-title">DAY NOTES</div>
+    ${(d.notes||[]).map((n,i)=>`<div class="party-line">${e('note'+i, n)}</div>`).join('')}
+    <div class="section-title">HOTEL</div>
+    <div class="hotel-grid">
+      ${['a','b','c'].map(p=>`
+        <div>
+          <div class="party-label">${p.toUpperCase()} PARTY</div>
+          <div class="hotel-name">${e(p+'name', h[p].name)}</div>
+          <div style="text-align:center;white-space:pre-line">${e(p+'addr', h[p].addr)}</div>
+          <div>TEL ${e(p+'tel', h[p].tel)}</div>
+          <div>ON-SITE ${e(p+'onsite', h[p].onsite)}</div>
+          <div>BARS ${e(p+'bars', h[p].bars)}</div>
+          <div>REST ${e(p+'rest', h[p].rest)}</div>
+          <div>HEALTH ${e(p+'health', h[p].health)}</div>
+          <div>WINDOWS ${e(p+'windows', h[p].windows)}</div>
+          <div>TO AIRPORT ${e(p+'airport', h[p].airport)}</div>
+          <div>TO VENUE ${e(p+'venue', h[p].venue)}</div>
+        </div>`).join('')}
+    </div>
+    <div class="section-title">PRODUCTION</div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:8px">
+      <div><div style="font-weight:700">VENUE</div><div style="white-space:pre-line">${e('venue', d.venue)}</div></div>
+      <div class="schedule-box"><div class="stitle">SCHEDULE</div><div style="white-space:pre-line">${e('schedule', d.schedule)}</div></div>
+    </div>
+    <div class="section-title">TONIGHT</div>
+    ${(d.tonight||[]).map((n,i)=>`<div class="party-line">${e('tonight'+i, n)}</div>`).join('')}
   `;
   document.getElementById('editBtn').style.display = editing ? 'none' : 'inline-block';
   document.getElementById('saveBtn').style.display = editing ? 'inline-block' : 'none';
 }
-function toggleEdit() {
-  editing = true;
-  renderForm();
-}
+function toggleEdit() { editing = true; renderSheet(); }
 function saveDay() {
-  data[currentKey] = {
-    status: document.getElementById('fstatus').value,
-    hotels: document.getElementById('fhotels').value,
-    venue: document.getElementById('fvenue').value,
-    schedule: document.getElementById('fschedule').value,
-    notes: document.getElementById('fnotes').value
-  };
+  // For now just confirm; next step writes to shared JSON
+  alert('Saved (local). Next: push to shared data so crew app updates.');
   editing = false;
-  renderForm();
-  alert('Saved (local only for now). Next step: push to shared JSON so crew app updates.');
+  renderSheet();
 }
 function show(id) {
   document.getElementById('calendar').classList.add('hidden');
