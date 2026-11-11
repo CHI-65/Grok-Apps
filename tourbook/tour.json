@@ -1,0 +1,18 @@
+{
+  "2026-11-10": {
+    "banner": "DAY OFF",
+    "title": "DAY OFF",
+    "date": "TUESDAY, NOVEMBER 10, 2026",
+    "city": "WASHINGTON, DC",
+    "tz": "EST",
+    "notes": ["A PARTY  DAY OFF IN WASHINGTON", "B PARTY  DAY OFF IN WASHINGTON", "C PARTY  DAY OFF IN WASHINGTON"],
+    "hotels": {
+      "a": {"name":"THE WILLARD","addr":"1401 PENNSYLVANIA AVE NW\nWASHINGTON, DC 20004","tel":"(202) 628-9100","onsite":"AVAILABLE","bars":"1","rest":"1","health":"FITNESS CENTER","windows":"NOT OPENABLE","airport":"5.2 MILES","venue":"1.1 MILES"},
+      "b": {"name":"HOTEL WASHINGTON","addr":"515 15TH ST NW\nWASHINGTON, DC 20004","tel":"(202) 661-2400","onsite":"AVAILABLE","bars":"1","rest":"1","health":"FITNESS CENTER","windows":"OPENABLE","airport":"5.0 MILES","venue":"0.8 MILES"},
+      "c": {"name":"HAMPTON INN","addr":"1729 H ST NW\nWASHINGTON, DC 20006","tel":"(202) 296-1006","onsite":"AVAILABLE","bars":"0","rest":"0","health":"FITNESS CENTER","windows":"NOT OPENABLE","airport":"5.4 MILES","venue":"1.3 MILES"}
+    },
+    "venue": "NATIONALS PARK\n1500 SOUTH CAPITOL ST SE\nWASHINGTON, DC 20003",
+    "schedule": "Day off. Load-in tomorrow.",
+    "tonight": ["A PARTY  OVERNIGHT IN WASHINGTON", "B PARTY  OVERNIGHT IN WASHINGTON", "C PARTY  OVERNIGHT IN WASHINGTON"]
+  }
+}
