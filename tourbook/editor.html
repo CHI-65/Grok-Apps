@@ -32,13 +32,15 @@
   .cal-grid .filled { background:#ffe6e6; font-weight:600; }
   .hidden { display:none !important; }
   .edit-btn { background:#e10600; color:#fff; border:none; padding:8px 16px; border-radius:6px; margin:8px 4px; font-family:system-ui; }
+  #status { font-size:12px; color:#060; margin-left:10px; }
 </style>
 </head>
 <body>
 <header>
-  <div>Editor • v1.2</div>
+  <div>Editor • v1.3 <span id="status"></span></div>
   <div class="nav">
     <button onclick="show('calendar')">Calendar</button>
+    <button onclick="pushToCrew()">Push to Crew</button>
   </div>
 </header>
 <div id="calendar" class="page">
@@ -54,25 +56,17 @@
   </div>
 </div>
 <script>
-const data = {
-  '2026-11-10': {
-    banner: 'DAY OFF',
-    title: 'DAY OFF',
-    date: 'TUESDAY, NOVEMBER 10, 2026',
-    city: 'WASHINGTON, DC',
-    tz: 'EST',
-    notes: ['A PARTY  DAY OFF IN WASHINGTON', 'B PARTY  DAY OFF IN WASHINGTON', 'C PARTY  DAY OFF IN WASHINGTON'],
-    hotels: {
-      a: { name:'THE WILLARD', addr:'1401 PENNSYLVANIA AVE NW\nWASHINGTON, DC 20004', tel:'(202) 628-9100', onsite:'AVAILABLE', bars:'1', rest:'1', health:'FITNESS CENTER', windows:'NOT OPENABLE', airport:'5.2 MILES', venue:'1.1 MILES' },
-      b: { name:'HOTEL WASHINGTON', addr:'515 15TH ST NW\nWASHINGTON, DC 20004', tel:'(202) 661-2400', onsite:'AVAILABLE', bars:'1', rest:'1', health:'FITNESS CENTER', windows:'OPENABLE', airport:'5.0 MILES', venue:'0.8 MILES' },
-      c: { name:'HAMPTON INN', addr:'1729 H ST NW\nWASHINGTON, DC 20006', tel:'(202) 296-1006', onsite:'AVAILABLE', bars:'0', rest:'0', health:'FITNESS CENTER', windows:'NOT OPENABLE', airport:'5.4 MILES', venue:'1.3 MILES' }
-    },
-    venue: 'NATIONALS PARK\n1500 SOUTH CAPITOL ST SE\nWASHINGTON, DC 20003',
-    schedule: 'Day off. Load-in tomorrow.',
-    tonight: ['A PARTY  OVERNIGHT IN WASHINGTON', 'B PARTY  OVERNIGHT IN WASHINGTON', 'C PARTY  OVERNIGHT IN WASHINGTON']
-  }
-};
-
+let data = {};
+async function loadData() {
+  try {
+    const r = await fetch('tour.json?v=' + Date.now());
+    data = await r.json();
+  } catch(e) { data = {}; }
+  // overlay any local unsaved edits
+  const local = localStorage.getItem('tour-edits');
+  if (local) Object.assign(data, JSON.parse(local));
+  buildCal();
+}
 function buildCal() {
   const cal = document.getElementById('novCal');
   let html = '<div class="dow">S</div><div class="dow">M</div><div class="dow">T</div><div class="dow">W</div><div class="dow">T</div><div class="dow">F</div><div class="dow">S</div>';
@@ -83,7 +77,6 @@ function buildCal() {
   }
   cal.innerHTML = html;
 }
-
 let currentKey = null, editing = false;
 function openDay(key) {
   currentKey = key;
@@ -95,6 +88,7 @@ function e(id, val) {
   if (!editing) return val || '';
   return `<span class="editable" contenteditable="true" id="${id}">${val||''}</span>`;
 }
+function get(id) { const el = document.getElementById(id); return el ? el.textContent : ''; }
 function renderSheet() {
   const d = data[currentKey] || {};
   const h = d.hotels || {a:{},b:{},c:{}};
@@ -109,22 +103,22 @@ function renderSheet() {
       </div>
     </div>
     <div class="section-title">DAY NOTES</div>
-    ${(d.notes||[]).map((n,i)=>`<div class="party-line">${e('note'+i, n)}</div>`).join('')}
+    ${(d.notes||['','','']).map((n,i)=>`<div class="party-line">${e('note'+i, n)}</div>`).join('')}
     <div class="section-title">HOTEL</div>
     <div class="hotel-grid">
       ${['a','b','c'].map(p=>`
         <div>
           <div class="party-label">${p.toUpperCase()} PARTY</div>
-          <div class="hotel-name">${e(p+'name', h[p].name)}</div>
-          <div style="text-align:center;white-space:pre-line">${e(p+'addr', h[p].addr)}</div>
-          <div>TEL ${e(p+'tel', h[p].tel)}</div>
-          <div>ON-SITE ${e(p+'onsite', h[p].onsite)}</div>
-          <div>BARS ${e(p+'bars', h[p].bars)}</div>
-          <div>REST ${e(p+'rest', h[p].rest)}</div>
-          <div>HEALTH ${e(p+'health', h[p].health)}</div>
-          <div>WINDOWS ${e(p+'windows', h[p].windows)}</div>
-          <div>TO AIRPORT ${e(p+'airport', h[p].airport)}</div>
-          <div>TO VENUE ${e(p+'venue', h[p].venue)}</div>
+          <div class="hotel-name">${e(p+'name', (h[p]||{}).name)}</div>
+          <div style="text-align:center;white-space:pre-line">${e(p+'addr', (h[p]||{}).addr)}</div>
+          <div>TEL ${e(p+'tel', (h[p]||{}).tel)}</div>
+          <div>ON-SITE ${e(p+'onsite', (h[p]||{}).onsite)}</div>
+          <div>BARS ${e(p+'bars', (h[p]||{}).bars)}</div>
+          <div>REST ${e(p+'rest', (h[p]||{}).rest)}</div>
+          <div>HEALTH ${e(p+'health', (h[p]||{}).health)}</div>
+          <div>WINDOWS ${e(p+'windows', (h[p]||{}).windows)}</div>
+          <div>TO AIRPORT ${e(p+'airport', (h[p]||{}).airport)}</div>
+          <div>TO VENUE ${e(p+'venue', (h[p]||{}).venue)}</div>
         </div>`).join('')}
     </div>
     <div class="section-title">PRODUCTION</div>
@@ -133,23 +127,48 @@ function renderSheet() {
       <div class="schedule-box"><div class="stitle">SCHEDULE</div><div style="white-space:pre-line">${e('schedule', d.schedule)}</div></div>
     </div>
     <div class="section-title">TONIGHT</div>
-    ${(d.tonight||[]).map((n,i)=>`<div class="party-line">${e('tonight'+i, n)}</div>`).join('')}
+    ${(d.tonight||['','','']).map((n,i)=>`<div class="party-line">${e('tonight'+i, n)}</div>`).join('')}
   `;
   document.getElementById('editBtn').style.display = editing ? 'none' : 'inline-block';
   document.getElementById('saveBtn').style.display = editing ? 'inline-block' : 'none';
 }
 function toggleEdit() { editing = true; renderSheet(); }
 function saveDay() {
-  alert('Saved (local). Next: push to shared data so crew app updates.');
+  const h = {a:{},b:{},c:{}};
+  ['a','b','c'].forEach(p => {
+    h[p] = {
+      name: get(p+'name'), addr: get(p+'addr'), tel: get(p+'tel'),
+      onsite: get(p+'onsite'), bars: get(p+'bars'), rest: get(p+'rest'),
+      health: get(p+'health'), windows: get(p+'windows'),
+      airport: get(p+'airport'), venue: get(p+'venue')
+    };
+  });
+  data[currentKey] = {
+    banner: get('banner'), title: get('title'), date: get('date'),
+    city: get('city'), tz: get('tz'),
+    notes: [get('note0'), get('note1'), get('note2')],
+    hotels: h,
+    venue: get('venue'), schedule: get('schedule'),
+    tonight: [get('tonight0'), get('tonight1'), get('tonight2')]
+  };
+  localStorage.setItem('tour-edits', JSON.stringify(data));
   editing = false;
   renderSheet();
+  document.getElementById('status').textContent = 'Saved locally';
+}
+async function pushToCrew() {
+  document.getElementById('status').textContent = 'Pushing…';
+  // For now we just confirm; real GitHub write needs a token.
+  // The crew app will read tour.json. Next step wires the actual commit.
+  alert('Push is ready to wire. For now, changes are saved locally.\n\nNext: I will connect Save/Push so it updates tour.json that the crew app reads.');
+  document.getElementById('status').textContent = 'Ready to push';
 }
 function show(id) {
   document.getElementById('calendar').classList.add('hidden');
   document.getElementById('daypage').classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
 }
-buildCal();
+loadData();
 </script>
 </body>
 </html>
